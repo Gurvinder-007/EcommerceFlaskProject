@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>BookShop but for admins </title>
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <!-- The above line is to ensure that payments are able to go through, since security is not a concern of the project meaning without this line the payment system will expect more security features and will not work-->
+	<link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet" type="text/css" />
+    <!-- The above lines links the code to the static.css files which helps create a design for the store.-->
+</head>
+<body>
+	<div>
+		{% with messages = get_flashed_messages() %}
+		  {% if messages %}
+			<ul class=flashes>
+			{% for message in messages %}
+			  <li>{{ message }}</li>
+			{% endfor %}
+			</ul>
+		  {% endif %}
+		{% endwith %}
+	</div>
+ <!-- This section of the code below is for the shopping cart itself, it will start by creating the main page and all the buttons for it. -->
+	<div id="shopping-cart">
+		<div class="txt-heading">Shopping Cart</div>
+          <p>Administator page</p>
+	      <p><a href="{{url_for('.stocklevel')}}"><button>Stock</button></a></p>
+        <!-- Below here it will check if the user has added a item to the cart, in which case it will modify the store to have the item in the cart and adjust price and quantity as well as generate an empty cart button and a remove item button in order to empty the cart if need be or to remove a particular item -->
+		{% if 'cart_item' in session %}
+			<a id="btnEmpty" href="{{ url_for('.empty_cart') }}">Empty Cart</a>
+			<table class="tbl-cart" cellpadding="10" cellspacing="1">
+			<tbody>
+				<tr>
+
+                    <th style="text-align:left;">Name</th>
+					<th style="text-align:left;">Code</th>
+					<th style="text-align:right;" width="5%">Quantity</th>
+					<th style="text-align:right;" width="10%">Unit Price</th>
+					<th style="text-align:right;" width="10%">Price</th>
+					<th style="text-align:center;" width="5%">Remove</th>
+				</tr>
+				{% for key, val in session['cart_item'].items() %}
+					{% set quantity = session['cart_item'][key]['quantity'] %}
+					{% set price = session['cart_item'][key]['price'] %}
+					{% set item_price = session['cart_item'][key]['total_price'] %}					
+					<tr>
+						<td><img src="/static/images/{{ session['cart_item'][key]['image'] }}" class="cart-item-image" />{{ session['cart_item'][key]['name'] }}</td>
+						<td>{{ session['cart_item'][key]['code'] }}</td>
+						<td style="text-align:right;">{{ quantity }}</td>
+						<td  style="text-align:right;">&#8356; {{ price }}</td>
+						<td  style="text-align:right;">&#8356; {{ item_price }}</td>
+						<td style="text-align:center;">
+							<a href="{{ url_for('.delete_product', code=session['cart_item'][key]['code']) }}" class="btnRemoveAction">
+                            <img src="/static/images/icon-delete.png" alt="Remove Item" />
+
+							</a>
+						</td>
+					</tr>
+				{% endfor %}
+				<tr>
+					<td colspan="2" align="right">Total:</td>
+					<td align="right">{{ session['all_total_quantity'] }}</td>
+					<td align="right" colspan="2"><strong>&#8356; {{ session['all_total_price'] }}</strong></td>
+					<td></td>
+				</tr>
+			</tbody>
+			</table>
+        <!-- This part of the code will generate the payment form by linking to the bank project which sends the user the form in which they can enter payment details and pay for the product -->
+            <form action="https://topic-telex-5000.codio-box.uk/pay" method="POST">
+                  <input type="hidden" name="pid" value={{ session['pid'] }}>
+                  <input type="hidden" name="sid" value={{ session['sid'] }}>
+                  <input type="hidden" name="amount" value={{ session['all_total_price'] }}>         
+                  <input type="hidden" name="success_url" value="http://localhost:8080/payment/success">
+                  <input type="hidden" name="cancel_url" value="http://localhost:8080/payment/cancel">
+                  <input type="hidden" name="error_url" value="http://localhost:8080/payment/error">
+                  <input type="hidden" name="checksum"value={{ session['checksum'] }}>                      
+                  <input type="submit" value="Pay">
+                  Amount to be paid {{ session['all_total_price'] }}
+            </form>
+		{% else: %}
+			<div class="no-records">Your Cart is Empty</div>
+		{% endif %}
+	</div>
+
+    
+	<div id="product-grid">
+		<div class="txt-heading">Products</div>
+<!-- The code below is for when a product is added to cart, it will allow the user to click add to cart which will then trigger the add to cart function -->
+		{% for product in products %}
+        
+
+			<div class="product-item">
+				<form method="post" action="/add">
+					<div><img src="/static/images/{{ product[3] }}" class="product-image">></div>
+					<div class="product-tile-footer">
+						<div class="product-title">{{ product[1] }}</div>
+						<div class="product-price">&#163; {{ product[4] }}</div>
+						<div class="cart-action">
+							<input type="hidden" name="code" value="{{ product[2] }}"/>
+							<input type="text" class="product-quantity" name="quantity" value="1" size="2" />
+							<input type="submit" value="Add to Cart" class="btnAddAction" />
+						</div>
+					</div>
+				</form>
+			</div>
+
+		{% endfor %}
+	
+	</div>
+</body>
+</html>

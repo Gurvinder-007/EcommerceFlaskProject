@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Add stock</title>
+</head>
+<body>
+    <H1>Add stock</H1>
+    <P>Please enter your desired book to add to stock, please note you can only add genuine books without a duplicate code:</P>
+    <form action="{{page}}" method="post">
+        <!--Form below with all the values that need to be added in order to add a new book to the store and database for products -->
+      <label for="aiidd">ID:</label><br>
+      <input type="text" id="aiidd" name="aiidd"><br>
+      <label for="bname">Book name:</label><br>
+      <input type="text" id="bname" name="bname"><br>
+      <label for="ccode">Code:</label><br>
+      <input type="text" id="ccode" name="ccode"><br><br>
+      <label for="iidir">Image directory:</label><br>
+      <input type="text" id="iidir" name="iidir"><br>
+      <label for="aprice">Price:</label><br>
+      <input type="range" step= "0.01" min="1.00" max= "50.00"id="aprice" name="aprice" oninput="this.nextElementSibling.value = this.value"><output>25.00</output><br>
+      <label for="ddscr">Description:</label><br>
+      <textarea id="ddscr" name="ddscr" rows="4" cols="30"></textarea><br>
+      <label for="ddate">Date:</label><br>
+      <input type="date" id="ddate" name="ddate"><br>
+      <label for="tprice">Trading price:</label><br>
+      <!--Below is a slider which has a limit on a maximum of 100 for trading price and using step it will only increment the same way normal money would.-->
+      <input type="range" step= "0.01" min="1.00" max="100.00" id="tprice" name="tprice" oninput="this.nextElementSibling.value = this.value"><output>50.00</output><br>
+      <label for="quant">Quantity:</label><br>
+      <input type="range" min="1" max="20" id="quant" name="quant" oninput="this.nextElementSibling.value = this.value"><output>10</output><br>
+      <input type="submit" value="Submit">
+    </form>     
+    <!-- Below are buttons which will redirect the user to the main stock page and the home page if they click them, by doing this it will return them to the url for a different page -->
+    <p><a href="{{url_for('.stocklevel')}}"><button>Stock</button></a></p>
+    <p><a href="{{url_for('.home')}}"><button>Home</button></a></p>
+
+</body>
+</html>

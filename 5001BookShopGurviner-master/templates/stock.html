@@ -1,0 +1,37 @@
+<!doctype html>
+<html>
+   <body>
+       <!-- Below are the buttons which allow the user to return to the homepage or go to the add stock page. --> 
+     <p><a href="{{url_for('.home')}}"><button>Home</button></a></p> 
+     <p><a href="{{url_for('.updatenewstock')}}"><button>Add Stock</button></a></p>
+      <table border = 1>
+          <!-- The code below will generate a table and will populate rows with data that has been taken from the products database as well as resize images so they fit within the table properly. -->
+         <thead>
+            <td>ID</td> 
+            <td>Name</td>
+            <td>Code</td> 
+            <td>Price</td>
+            <td>Date</td>
+            <td>Description</td>
+            <td>TradePrice</td>
+            <td>Quantity</td>
+         </thead>
+         
+         {% for row in rows %}
+            <tr>
+               <td>{{row["id"]}}</td>
+               <td>{{row["name"]}}</td>
+               <td>{{row['code']}}</td>
+               <td><img src="/static/images/{{row['image']}}" width = "100px" height = "150px"></td> 
+               <td>{{row["price"]}}</td>
+               <td>{{row['date']}}</td>
+               <td>{{row['description']}}</td>
+               <td>{{row["tradeprice"]}}</td>
+               <td>{{row["quantity"]}}</td>
+            </tr>
+         {% endfor %}
+      </table>
+       
+       
+   </body>
+</html>
